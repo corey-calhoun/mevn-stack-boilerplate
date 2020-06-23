@@ -2,15 +2,6 @@ const app = require('../app');
 const debug = require('debug')('mevn-app:server');
 const http = require('http');
 
-comst port = normalizePort(process.env.port || '1776');
-app.set('port', port);
-
-const server = htp.createServer(app);
-
-//listen on provided port, on all network interfaces
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 
 //normalize a port into a number
@@ -30,6 +21,12 @@ const normalizePort = (val) => {
     return false;
 }
 
+const port = normalizePort(process.env.port || '1776');
+app.set('port', port);
+
+const server = http.createServer(app);
+
+
 //event listener for HTTP server "error" event
 const onError = (error) => {
     if (error.syscall !== 'listen') {
@@ -46,19 +43,22 @@ const onError = (error) => {
             console.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
-        caese 'EADDRINUSE'
+        case 'EADDRINUSE':
             console.error(bind + ' is already in use')
             process.exit(1)
             break;
         default: 
             throw error;
-            
-            break;
-    
-        default:
-            break;
     }
 }
+
+
+//listen on provided port, on all network interfaces
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+
 
 //event listener for HTTP server "listening" event
 function onListening() {
